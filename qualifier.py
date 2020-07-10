@@ -42,10 +42,10 @@ class Article:
         self.last_edited = None
 
     def get_id(self) -> int:
-        article_id = self.__class__.id
+        id = self.__class__.id
         self.__class__.id += 1
         
-        return article_id
+        return id
 
     @property
     def content(self) -> str:
@@ -118,6 +118,8 @@ class Article:
     def top(self, n_words: int, word_count: dict) -> dict:
         return dict(sorted(word_count.items(), key=lambda x: x[1], reverse=True)[:n_words])
 
+    def __lt__(self, other_article) -> bool:
+        return self.publication_date < other_article.publication_date
 
     def __repr__(self) -> str:
         return f'<Article title={repr(self.title)} author={repr(self.author)} publication_date={repr(self.publication_date.isoformat())}>'
