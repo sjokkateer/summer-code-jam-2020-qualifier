@@ -38,7 +38,7 @@ class Article:
         self.title = title
         self.author = author
         self.publication_date = publication_date
-        self.content = content
+        self._content = content
         self.last_edited = None
 
     def get_id(self) -> int:
@@ -46,6 +46,15 @@ class Article:
         self.__class__.id += 1
         
         return article_id
+
+    @property
+    def content(self) -> str:
+        return self._content
+
+    @content.setter
+    def content(self, new_content: str):
+        self.last_edited = datetime.datetime.now()
+        self._content = new_content
 
     def short_introduction(self, n_characters: int) -> str:
         if self.__len__() <= n_characters:
