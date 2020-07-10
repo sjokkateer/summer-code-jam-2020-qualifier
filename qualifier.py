@@ -29,12 +29,23 @@ class ArticleField:
 
 class Article:
     """The `Article` class you need to write for the qualifier."""
+    
+    id = 0
 
     def __init__(self, title: str, author: str, publication_date: datetime.datetime, content: str):
+        self.id = self.get_id()
+
         self.title = title
         self.author = author
         self.publication_date = publication_date
         self.content = content
+        self.last_edited = None
+
+    def get_id(self) -> int:
+        article_id = self.__class__.id
+        self.__class__.id += 1
+        
+        return article_id
 
     def short_introduction(self, n_characters: int) -> str:
         if self.__len__() <= n_characters:
