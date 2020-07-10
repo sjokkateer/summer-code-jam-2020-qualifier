@@ -24,13 +24,29 @@ class ArticleField:
     """The `ArticleField` class for the Advanced Requirements."""
 
     def __init__(self, field_type: typing.Type[typing.Any]):
-        pass
+        self.field_type = field_type
+
+    def __get__(self, instance, type=None):
+        if instance is None:
+            return self
+
+        return instance.__dict__.get(self.field_type)
+
+    def __set__(self, instance, value) -> None:
+        if not isinstance(value, self.field_type):
+            raise TypeError(f"expected an instance of type '{self.field_type.__name__}' for attribute '{self.name}', got '{type(value).__name__}' instead")
+
+        instance.__dict__[self.field_type] = value
+
+    def __set_name__(self, owner, name):
+        self.name = name
 
 
 class Article:
     """The `Article` class you need to write for the qualifier."""
     
     id = 0
+    attribute = ArticleField(field_type=int)
 
     def __init__(self, title: str, author: str, publication_date: datetime.datetime, content: str):
         self.id = self.get_id()
@@ -116,7 +132,14 @@ class Article:
         return content
 
     def top(self, n_words: int, word_count: dict) -> dict:
-        return dict(sorted(word_count.items(), key=lambda x: x[1], reverse=True)[:n_words])
+        # sorts a list of (key, value) tuples
+        # based on item[value] which would be the 2nd element in the typle
+        # which would in turn be the value of the item.
+        # in reverse, meaning it will be sorted descending.
+        # of this result list, the top n elements are taken and converted to a dict.
+        times_occurred = 1
+
+        return dict(sorted(word_count.items(), key=lambda item: item[times_occurred], reverse=True)[:n_words])
 
     def __lt__(self, other_article) -> bool:
         return self.publication_date < other_article.publication_date
@@ -126,4 +149,3 @@ class Article:
 
     def __len__(self) -> int:
         return len(self.content)
-
